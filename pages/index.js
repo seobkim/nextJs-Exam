@@ -1,9 +1,16 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import NavBar from "../components/NavBar";
 import Seo from "../components/Seo";
 
 export default function Home({ results }) {
   const API_KEY = "f9004e9fef05c8b3974f694457a7c1fa";
+  const router = useRouter();
+
+  const onClick = (id, title) => {
+    router.push(`/movies/${title}/${id}`);
+  };
 
   // const [movies, setMovies] = useState();
 
@@ -24,9 +31,20 @@ export default function Home({ results }) {
       <Seo title="Home" />
       {/* 중괄호 / 소괄호 까먹지마라.*/}
       {results?.map((movie) => (
-        <div className="movie" key={movie.id}>
+        <div
+          className="movie"
+          key={movie.id}
+          onClick={() => onClick(movie.id, movie.original_title)}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.original_title}</h4>
+          <h4>
+            <Link
+              legacyBehavior
+              href={`/movies/${movie.original_title}/${movie.id}`}
+            >
+              <a>{movie.original_title}</a>
+            </Link>
+          </h4>
         </div>
       ))}
       <style jsx>{`
@@ -41,6 +59,9 @@ export default function Home({ results }) {
           border-radius: 12px;
           transition: transform 0.2s ease-in-out;
           box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        }
+        .movie {
+          cursor: pointer;
         }
         .movie:hover img {
           transform: scale(1.05) translateY(-10px);
